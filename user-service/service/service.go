@@ -3,9 +3,9 @@ package service
 
 import (
 	"context"
-	"encoding/json"
 
 	userspb "github.com/hitesh-babariya/micro-grpc-kafka/proto/user/v1"
+	"google.golang.org/protobuf/encoding/protojson"
 
 	"github.com/hitesh-babariya/micro-grpc-kafka/common/kafka"
 	kafkago "github.com/segmentio/kafka-go"
@@ -22,7 +22,11 @@ func NewService(writer *kafkago.Writer) *Service {
 	return &Service{writer: writer}
 }
 
-func (s *Service) CreateUser(ctx context.Context, req *userspb.CreateUserRequest) (*userspb.UserResponse, error) {
+func (s *Service) CreateUser(
+	ctx context.Context,
+	req *userspb.CreateUserRequest,
+) (*userspb.UserResponse, error) {
+
 	id := uuid.New().String()
 
 	user := userspb.UserResponse{
@@ -31,8 +35,11 @@ func (s *Service) CreateUser(ctx context.Context, req *userspb.CreateUserRequest
 		Email: req.Email,
 	}
 
-	// publish event
-	event, _ := json.Marshal(user)
+	event, err := protojson.Marshal(&user)
+	if err != nil {
+		return nil, err
+	}
+
 	_ = kafka.Produce(ctx, s.writer, nil, event)
 
 	return &user, nil
