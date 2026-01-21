@@ -3,8 +3,9 @@ package main
 
 import (
 	"context"
-	"kafka"
-	"orders"
+
+	"github.com/hitesh-babariya/micro-grpc-kafka/common/kafka"
+	"github.com/hitesh-babariya/micro-grpc-kafka/order-service/orders"
 )
 
 func main() {
