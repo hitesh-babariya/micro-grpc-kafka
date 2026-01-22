@@ -1,0 +1,54 @@
+name: Release common/kafka
+
+on:
+  push:
+    branches: [ "master" ]
+    paths:
+      - "common/kafka/**"
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: "1.24.x"
+
+      - name: Run tests
+        working-directory: common/kafka
+        run: go test ./...
+
+      - name: Get next version
+        id: version
+        run: |
+          LAST_TAG=$(git tag -l "common/kafka/v*" | sort -V | tail -n 1)
+          echo "Last tag: $LAST_TAG"
+
+          if [ -z "$LAST_TAG" ]; then
+            NEXT="common/kafka/v0.1.0"
+          else
+            VERSION=${LAST_TAG##*/}
+            MAJOR=$(echo $VERSION | cut -d. -f1 | tr -d v)
+            MINOR=$(echo $VERSION | cut -d. -f2)
+            PATCH=$(echo $VERSION | cut -d. -f3)
+            NEXT="common/kafka/v$MAJOR.$MINOR.$((PATCH+1))"
+          fi
+
+          echo "next=$NEXT" >> $GITHUB_OUTPUT
+
+      - name: Create tag
+        run: |
+          git tag ${{ steps.version.outputs.next }}
+          git push origin ${{ steps.version.outputs.next }}
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.version.outputs.next }}
+          name: Release ${{ steps.version.outputs.next }}

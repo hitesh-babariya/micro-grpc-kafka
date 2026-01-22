@@ -1,0 +1,34 @@
+name: Go CI
+
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: "1.24.x"
+
+      - name: Test common/kafka
+        working-directory: common/kafka
+        run: go test ./...
+
+      - name: Test proto
+        working-directory: proto/user/v1
+        run: go test ./...
+
+      - name: Test user-service
+        working-directory: user-service
+        run: go test ./...
+
+      - name: Test order-service
+        working-directory: order-service
+        run: go test ./...
