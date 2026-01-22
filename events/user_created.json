@@ -1,5 +1,6 @@
 {
   "id": "uuid",
   "name": "John",
-  "email": "john@test.com"
+  "email": "john@test.com",
+  "age":33
 }
