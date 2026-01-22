@@ -8,7 +8,7 @@ on:
       - "proto/**"
 
 jobs:
-  release:
+  release-proto:
     runs-on: ubuntu-latest
 
     steps:

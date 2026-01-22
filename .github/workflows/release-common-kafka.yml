@@ -7,7 +7,7 @@ on:
       - "common/kafka/**"
 
 jobs:
-  release:
+  release-kafka:
     runs-on: ubuntu-latest
 
     steps:
