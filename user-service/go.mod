@@ -4,7 +4,7 @@ go 1.24.5
 
 require (
 	github.com/google/uuid v1.6.0
-	github.com/hitesh-babariya/micro-grpc-kafka/proto/user v0.1.1
+	github.com/hitesh-babariya/micro-grpc-kafka v0.2.0
 	github.com/hitesh-babariya/micro-grpc-kafka/common/kafka v0.2.0
 	github.com/segmentio/kafka-go v0.4.50
 	google.golang.org/grpc v1.78.0
