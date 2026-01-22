@@ -9,6 +9,8 @@ on:
 jobs:
   release-kafka:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write  # ✅ allows pushing tags and creating releases
 
     steps:
       - uses: actions/checkout@v4
