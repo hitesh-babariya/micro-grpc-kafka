@@ -4,10 +4,10 @@ package service
 import (
 	"context"
 
-	userspb "github.com/hitesh-babariya/micro-grpc-kafka/proto/user/v1"
 	"google.golang.org/protobuf/encoding/protojson"
 
 	"github.com/hitesh-babariya/micro-grpc-kafka/common/kafka"
+	userspb "github.com/hitesh-babariya/micro-grpc-kafka/proto/user"
 	kafkago "github.com/segmentio/kafka-go"
 
 	"github.com/google/uuid"

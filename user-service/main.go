@@ -7,7 +7,7 @@ import (
 	"github.com/hitesh-babariya/micro-grpc-kafka/common/kafka"
 	"github.com/hitesh-babariya/micro-grpc-kafka/user-service/service"
 
-	userspb "github.com/hitesh-babariya/micro-grpc-kafka/proto/user/v1"
+	userspb "github.com/hitesh-babariya/micro-grpc-kafka/proto/user"
 
 	"google.golang.org/grpc"
 )
