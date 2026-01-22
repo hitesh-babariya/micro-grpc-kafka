@@ -1,7 +1,7 @@
 syntax = "proto3";
 
 package users;
-option go_package = "github.com/hitesh-babariya/micro-grpc-kafka/proto/user/v1;userspb";
+option go_package = "github.com/hitesh-babariya/micro-grpc-kafka/proto/user;userspb";
 
 service UsersService {
   rpc CreateUser (CreateUserRequest) returns (UserResponse);
