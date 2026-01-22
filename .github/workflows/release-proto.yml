@@ -24,7 +24,7 @@ jobs:
           go-version: "1.24.x"
 
       - name: Run tests (proto)
-        working-directory: proto/user/v1
+        working-directory: proto/user
         run: go test ./...
 
       - name: Calculate next version

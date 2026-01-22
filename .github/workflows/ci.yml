@@ -23,7 +23,7 @@ jobs:
         run: go test ./...
 
       - name: Test proto
-        working-directory: proto/user/v1
+        working-directory: proto/user
         run: go test ./...
 
       - name: Test user-service
