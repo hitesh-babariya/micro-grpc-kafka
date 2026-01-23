@@ -26,10 +26,19 @@ jobs:
           minikube version
 
       # Step 4: Install dependencies
-      - name: Install Minikube dependencies
+      - name: Install Minikube none-driver dependencies
         run: |
             sudo apt-get update
-            sudo apt-get install -y conntrack
+            sudo apt-get install -y \
+            conntrack \
+            crictl \
+            socat \
+            ebtables \
+            iptables \
+            iproute2 \
+            util-linux \
+            curl \
+            ca-certificates
 
       # Step 5: Start Minikube
       - name: Start Minikube
