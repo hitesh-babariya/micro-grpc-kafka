@@ -2,8 +2,10 @@ name: Build & Deploy to Minikube
 
 on:
   push:
-    tags:
-      - "v*.*.*"
+    branches: [ "master" ]
+  pull_request:    
+    # tags:
+    #   - "v*.*.*"
 
 jobs:
   build-and-deploy:
