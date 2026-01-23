@@ -25,7 +25,13 @@ jobs:
           sudo install minikube-linux-amd64 /usr/local/bin/minikube
           minikube version
 
-      # Step 4: Start Minikube
+      # Step 4: Install dependencies
+      - name: Install Minikube dependencies
+        run: |
+            sudo apt-get update
+            sudo apt-get install -y conntrack
+
+      # Step 5: Start Minikube
       - name: Start Minikube
         run: |
           sudo minikube start --driver=none
@@ -33,22 +39,22 @@ jobs:
           sudo chown -R $USER $HOME/.kube
           minikube status
 
-      # Step 5: Configure Docker to use Minikube's Docker daemon
+      # Step 6: Configure Docker to use Minikube's Docker daemon
       - name: Use Minikube Docker daemon
         run: |
           eval $(minikube docker-env)
 
-      # Step 6: Build Docker images
+      # Step 7: Build Docker images
       - name: Build user-service image
         run: docker build -t user-service:latest ./user-service
 
       - name: Build order-service image
         run: docker build -t order-service:latest ./order-service
 
-      # Step 7: Set up kubectl
+      # Step 8: Set up kubectl
       - uses: azure/setup-kubectl@v4
 
-      # Step 8: Deploy services to Minikube
+      # Step 9: Deploy services to Minikube
       - name: Deploy to Minikube
         run: |
           kubectl apply -f k8s/
