@@ -9,7 +9,11 @@ import (
 )
 
 func main() {
-	reader := kafka.NewReader()
+	//reader := kafka.NewReader()
+	reader := kafka.NewReader(
+		"user.created",
+		"order-service-group",
+	)
 
 	kafka.Consume(context.Background(), reader, orders.HandleUserCreated)
 }
