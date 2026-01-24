@@ -1,11 +1,9 @@
-name: Build & Deploy to Minikube
+name: Build & Deploy to Kind
 
 on:
   push:
     branches: [ "master" ]
   pull_request:    
-    # tags:
-    #   - "v*.*.*"
 
 jobs:
   build-and-deploy:
@@ -15,66 +13,70 @@ jobs:
       # Step 1: Checkout code
       - uses: actions/checkout@v4
 
-      # Step 2: Install Docker (needed for building images)
-      # Docker is pre-installed on ubuntu-latest, so this step is not needed.
+      # Step 2: Docker is pre-installed on ubuntu-latest
 
-      # Step 3: Install Minikube
-      - name: Install Minikube
-        run: |
-          curl -LO https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64
-          sudo install minikube-linux-amd64 /usr/local/bin/minikube
-          minikube version
+      # Step 3: Install kubectl
+      - uses: azure/setup-kubectl@v4
 
-      # Step 4: Start Minikube
-      - name: Start Minikube
+      # Step 4: Install Kind
+      - name: Install Kind
         run: |
-            minikube start --driver=docker
-            minikube status
+          curl -Lo ./kind https://kind.sigs.k8s.io/dl/v0.25.0/kind-linux-amd64
+          chmod +x ./kind
+          sudo mv ./kind /usr/local/bin/kind
+          kind version
 
-      # Step 5: Configure Docker to use Minikube's Docker daemon
-      - name: Use Minikube Docker daemon
+      # Step 5: Create Kind cluster
+      - name: Create Kind cluster
         run: |
-          eval $(minikube docker-env)
+          kind create cluster --name go-kafka-grpc --wait 60s
+          kubectl cluster-info
+          kubectl get nodes
 
       # Step 6: Build Docker images
       - name: Build user-service image
-        run: docker build -t user-service:latest -f user-service/Dockerfile .  # Do this way if go.mod is in root.
-        #run: docker build -t user-service:latest ./user-service            # Do this way if go.mod is at service level.
+        run: docker build -t user-service:latest -f user-service/Dockerfile .
+
+      - name: Load user-service image into Kind
+        run: kind load docker-image user-service:latest --name go-kafka-grpc
 
       - name: Build order-service image
-        run: docker build -t order-service:latest -f order-service/Dockerfile .  # Do this way if go.mod is in root.
-        #run: docker build -t order-service:latest ./order-service
+        run: docker build -t order-service:latest -f order-service/Dockerfile .
 
-      # Step 7: Set up kubectl
-      - uses: azure/setup-kubectl@v4
+      - name: Load order-service image into Kind
+        run: kind load docker-image order-service:latest --name go-kafka-grpc
 
-      # Step 8: Deploy services to Minikube
+      # Step 7: Deploy Kafka
       - name: Deploy Kafka
         run: |
           kubectl apply -f k8s/zookeeper.yaml
           kubectl apply -f k8s/kafka.yaml
           kubectl wait --for=condition=Ready pod -l app=zookeeper --timeout=120s
           kubectl wait --for=condition=Ready pod -l app=my-kafka --timeout=120s
-      
-      - name: Deploy Services
-        run: |
-          kubectl apply -f k8s/
 
+      # Step 8: Deploy your services
+      - name: Deploy Services
+        run: kubectl apply -f k8s/
+
+      # Step 9: Debug pods
       - name: Debug pods
         run: |
           kubectl get pods -o wide
           kubectl describe pods
-      
+
+      # Step 10: Wait for service pods
       - name: Wait for service pods
         run: |
           kubectl wait --for=condition=Ready pod -l app=user-service --timeout=120s
           kubectl wait --for=condition=Ready pod -l app=order-service --timeout=120s
 
+      # Step 11: Show logs
       - name: Show logs
         run: |
-            kubectl logs -l app=user-service --tail=100
-            kubectl logs -l app=order-service --tail=100
+          kubectl logs -l app=user-service --tail=100
+          kubectl logs -l app=order-service --tail=100
 
+      # Step 12: Rollout status
       - name: Rollout status
         run: |
           kubectl rollout status deployment/user-service
