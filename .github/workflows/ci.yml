@@ -2,9 +2,11 @@ name: Go CI
 
 on:
   push:
-    branches: [ "master" ]
-  pull_request:
-
+    #branches: [ "master" ]
+    #pull_request:
+    tags:
+      - "v*.*.*"   # only build images for releases
+    
 jobs:
   ci-tests:
     runs-on: ubuntu-latest

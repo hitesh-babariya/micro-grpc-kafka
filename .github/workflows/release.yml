@@ -2,8 +2,9 @@ name: Automated Release
 
 on:
   push:
-    branches: [ master, main ]
-
+    #branches: [ master, main ]
+    tags:
+      - "v*.*.*"   # only build images for releases
 permissions:
   contents: write
 
