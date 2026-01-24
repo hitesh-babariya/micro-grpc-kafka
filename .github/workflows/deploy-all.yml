@@ -56,7 +56,12 @@ jobs:
 
       # Step 8: Deploy your services
       - name: Deploy Services
-        run: kubectl apply -f k8s/
+        run: |
+          kubectl apply -f k8s/user-deployment.yaml
+          kubectl apply -f k8s/user-service.yaml
+          kubectl apply -f k8s/order-deployment.yaml
+          kubectl apply -f k8s/order-service.yaml
+
 
       # Step 9: Debug pods
       - name: Debug pods
