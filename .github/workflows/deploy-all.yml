@@ -52,5 +52,15 @@ jobs:
       - name: Deploy to Minikube
         run: |
           kubectl apply -f k8s/
+        
+      - name: Debug pods
+        run: |
+          kubectl get pods -o wide
+          kubectl describe pods
+      
+      - name: User-service logs
+        run: |
+          kubectl logs -l app=user-service --tail=100
+
           kubectl rollout status deployment/user-service
           kubectl rollout status deployment/order-service
