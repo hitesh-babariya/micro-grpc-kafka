@@ -14,7 +14,9 @@ spec:
     spec:
       containers:
         - name: user-service
-          image: ghcr.io/YOUR_ORG/user-service:latest
+          #image: ghcr.io/YOUR_ORG/user-service:latest   # This is for image from github container registry.
+          image: user-service:latest   # This is for local image in minikube.
+          imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 50051
           env:          # added this for kafka setup

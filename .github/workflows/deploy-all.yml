@@ -38,10 +38,12 @@ jobs:
 
       # Step 6: Build Docker images
       - name: Build user-service image
-        run: docker build -t user-service:latest ./user-service
+        run: docker build -t user-service:latest -f user-service/Dockerfile .  # Do this way if go.mod is in root.
+        #run: docker build -t user-service:latest ./user-service            # Do this way if go.mod is at service level.
 
       - name: Build order-service image
-        run: docker build -t order-service:latest ./order-service
+        run: docker build -t order-service:latest -f order-service/Dockerfile .  # Do this way if go.mod is in root.
+        #run: docker build -t order-service:latest ./order-service
 
       # Step 7: Set up kubectl
       - uses: azure/setup-kubectl@v4
