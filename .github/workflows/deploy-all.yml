@@ -52,7 +52,10 @@ jobs:
       - name: Deploy to Minikube
         run: |
           kubectl apply -f k8s/
-        
+
+      - name: Wait for user-service pod ready
+        run: kubectl wait --for=condition=Ready pod -l app=user-service --timeout=60s
+  
       - name: Debug pods
         run: |
           kubectl get pods -o wide
