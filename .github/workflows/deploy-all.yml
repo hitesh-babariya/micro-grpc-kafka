@@ -49,10 +49,9 @@ jobs:
       # Step 7: Deploy Kafka
       - name: Deploy Kafka
         run: |          
-          kubectl apply -f k8s/zookeeper.yaml
-          kubectl wait --for=condition=Ready pod -l app=zookeeper --timeout=300s
-          kubectl apply -f k8s/kafka.yaml
-          kubectl wait --for=condition=Ready pod -l app=my-kafka --timeout=300s
+          kubectl apply -f k8s/redpanda.yaml
+          kubectl wait --for=condition=Ready pod -l app=redpanda --timeout=120s
+
 
       # Step 8: Deploy your services
       - name: Deploy Services

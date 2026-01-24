@@ -21,4 +21,4 @@ spec:
             - containerPort: 50051
           env:          # added this for kafka setup
             - name: KAFKA_BROKERS
-              value: "my-kafka:9092"
+              value: "redpanda:9092"
