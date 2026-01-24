@@ -60,7 +60,10 @@ jobs:
       
       - name: User-service logs
         run: |
+          kubectl wait --for=condition=Ready pod -l app=user-service --timeout=60s
           kubectl logs -l app=user-service --tail=100
-
+      
+      - name: Rollout status
+        run: |
           kubectl rollout status deployment/user-service
           kubectl rollout status deployment/order-service
