@@ -49,23 +49,32 @@ jobs:
       - uses: azure/setup-kubectl@v4
 
       # Step 8: Deploy services to Minikube
-      - name: Deploy to Minikube
+      - name: Deploy Kafka
+        run: |
+          kubectl apply -f k8s/zookeeper.yaml
+          kubectl apply -f k8s/kafka.yaml
+          kubectl wait --for=condition=Ready pod -l app=zookeeper --timeout=120s
+          kubectl wait --for=condition=Ready pod -l app=my-kafka --timeout=120s
+      
+      - name: Deploy Services
         run: |
           kubectl apply -f k8s/
 
-      - name: Wait for user-service pod ready
-        run: kubectl wait --for=condition=Ready pod -l app=user-service --timeout=60s
-  
       - name: Debug pods
         run: |
           kubectl get pods -o wide
           kubectl describe pods
       
-      - name: User-service logs
+      - name: Wait for service pods
         run: |
-          kubectl wait --for=condition=Ready pod -l app=user-service --timeout=60s
-          kubectl logs -l app=user-service --tail=100
-      
+          kubectl wait --for=condition=Ready pod -l app=user-service --timeout=120s
+          kubectl wait --for=condition=Ready pod -l app=order-service --timeout=120s
+
+      - name: Show logs
+        run: |
+            kubectl logs -l app=user-service --tail=100
+            kubectl logs -l app=order-service --tail=100
+
       - name: Rollout status
         run: |
           kubectl rollout status deployment/user-service
