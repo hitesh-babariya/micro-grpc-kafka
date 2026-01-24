@@ -20,6 +20,12 @@ spec:
           env:
             - name: ALLOW_ANONYMOUS_LOGIN
               value: "yes"
+          volumeMounts:
+            - name: zk-data
+              mountPath: /bitnami/zookeeper
+      volumes:
+        - name: zk-data
+          emptyDir: {}
 ---
 apiVersion: v1
 kind: Service
