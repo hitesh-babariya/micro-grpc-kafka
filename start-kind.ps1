@@ -34,14 +34,12 @@ foreach ($img in $Images) {
     & kind load docker-image "$($img.Name):latest" --name $ClusterName
 }
 
-# Step 3: Deploy Kafka (Zookeeper + Kafka)
-Write-Host "Deploying Kafka..."
-kubectl apply -f "$K8sDir\zookeeper.yaml"
-kubectl apply -f "$K8sDir\kafka.yaml"
+# Step 3: Deploy Redpanda
+Write-Host "Deploying Redpanda..."
+kubectl apply -f "$K8sDir\redpanda.yml"
 
-Write-Host "Waiting for Kafka pods to be ready..."
-kubectl wait --for=condition=Ready pod -l app=zookeeper --timeout=120s
-kubectl wait --for=condition=Ready pod -l app=my-kafka --timeout=120s
+Write-Host "Waiting for Redpanda pod to be ready..."
+kubectl wait --for=condition=Ready pod -l app=redpanda --timeout=120s
 
 # Step 4: Deploy Go services
 Write-Host "Deploying Go services..."
